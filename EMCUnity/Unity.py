@@ -26,13 +26,17 @@ class Unity:
         self.model = sys_info['content']['model']
         self.software = sys_info['content']['softwareVersion']
 
+        session_info = self.unity_request('/types/loginSessionInfo/instances').json()
+
     def process_response(self, response):
         """ Process the HTTPS response and set headers or raise exceptions """
         # TODO: work with Exceptions for easier troubleshooting
         response.raise_for_status()
 
-        if 'EMC-CSRF-TOKEN' not in self.headers:
-            self.headers['EMC-CSRF-TOKEN'] = response.headers.get('emc-csrf-token')
+        if 'EMC-CSRF-TOKEN' not in self.headers and 'EMC-CSRF-TOKEN' in response.headers:
+            self.headers['EMC-CSRF-TOKEN'] = response.headers.get('EMC-CSRF-TOKEN')
+
+        if 'EMC-CSRF-TOKEN' in self.headers:
             self.is_auth = True
 
         return
