@@ -9,9 +9,9 @@ This module has been developed to provide a pythonic interface for interacting w
 
 Although this module provides a layer of abstraction between the REST API and the developer, it is recommended that you review the following documents as a reference, particularly when referencing object names, fields that are available, and the use of filters when querying the array.
 
-[Unity Family Unisphere Management REST API Reference Guide](https://support.emc.com/docu69899_Unity_Family_Unisphere_Management_REST_API_Reference_Guide.zip?language=en_US)
+[Unity Family Unisphere Management REST API Reference Guide](https://support.emc.com/docu91031_Dell-EMC-Unity-Unisphere-Management-REST-API-Reference-Guide-%28PDF%29.pdf)
 
-[Unity Family Unisphere Management REST API Programmers' Guide](https://support.emc.com/docu69331_Unity-Family-Unisphere-Management-REST-API-Programmer's-Guide.pdf?language=en_US)
+[Unity Family Unisphere Management REST API Programmers' Guide](https://support.emc.com/docu91031_Dell_EMC_Unity_Unisphere_Management_REST_API_Reference_Guide_%28PDF%29.pdf)
 
 As of today the module is fully functional for retrieving information from the array along with performing manual POST and DELETE requests.   Work is continuing to create helper functions to simplify common tasks.
 
@@ -69,12 +69,20 @@ You can also make direct calls (GET,POST,DELETE) to the REST API
                'lunParameters':{'pool':{'id':'pool_1'},
                                         'size': 50000000}}
 
-    response = self.post('/types/storageResource/action/createLun',payload)
+    response = unity.post('/types/storageResource/action/createLun',payload)
 
     new_id = response.json()['content']['storageResource']['id']
 
     # Delete a LUN manually
-    response = self.delete('/instances/storageResource/%s' % new_id)  
+    response = unity.delete('/instances/storageResource/%s' % new_id)  
+
+Performing a service action to toggle SSH access:
+
+    from EMCUnity import Unity
+    unity = Unity('50.2.2.2','admin','ultraseekret')
+    payload = { 'currentPassword' : 'ultraseekret' }
+    r = unity.post('/instances/serviceAction/changeSSHStatus/action/execute',payload)
+    # or use '/instances/serviceAction/shutdownSystem/action/execute' to shut down the server
 
 
 Licensing
